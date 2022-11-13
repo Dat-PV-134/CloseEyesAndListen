@@ -1,8 +1,12 @@
 package com.datpv134.closeeyesandlisten.ui;
 
+import static com.datpv134.closeeyesandlisten.service.MyApplication.CHANNEL_ID;
+import static com.datpv134.closeeyesandlisten.service.MyApplication.isRunning;
 import static com.datpv134.closeeyesandlisten.service.MyApplication.mediaPlayer;
 
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -14,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.datpv134.closeeyesandlisten.R;
 import com.datpv134.closeeyesandlisten.databinding.ActivityMainBinding;
 import com.datpv134.closeeyesandlisten.model.Song;
+import com.datpv134.closeeyesandlisten.service.MyService;
 
 import java.io.Serializable;
 
@@ -26,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (mediaPlayer.isPlaying()) {
+        if (isRunning || mediaPlayer.isPlaying()) {
             startActivity(new Intent(getBaseContext(), MusicPlayerActivity.class));
         }
 
@@ -90,5 +95,18 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentId, fragment)
                 .commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(getBaseContext(), MyService.class);
+        stopService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) {
+                manager.deleteNotificationChannel(CHANNEL_ID);
+            }
+        }
+        super.onDestroy();
     }
 }

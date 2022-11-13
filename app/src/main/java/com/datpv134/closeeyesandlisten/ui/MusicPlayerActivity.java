@@ -208,6 +208,12 @@ public class MusicPlayerActivity extends AppCompatActivity {
                     if (playNumber <= 1) {
                         mediaPlayer.start();
                         binding.imagePlay.setImageResource(R.drawable.icon_pause);
+                    } else {
+                        bundleF.putSerializable("song1", song);
+                        bundleF.putBoolean("isPlaying", false);
+                        bundleF.putBoolean("isNewSong", false);
+                        intent1.putExtras(bundleF);
+                        startService(intent1);
                     }
                     updateSeekBar();
                 }

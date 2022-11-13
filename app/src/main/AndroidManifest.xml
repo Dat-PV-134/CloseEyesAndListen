@@ -19,7 +19,7 @@
         android:theme="@style/Theme.CloseEyesAndListen"
         tools:targetApi="31">
 
-        <service android:name=".service.MyService"/>
+        <service android:name=".service.MyService" android:stopWithTask="true"/>
         <receiver android:name=".service.MyReceiver"/>
 
 

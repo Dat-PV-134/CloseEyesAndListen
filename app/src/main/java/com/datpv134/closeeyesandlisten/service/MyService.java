@@ -108,10 +108,9 @@ public class MyService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         mediaPlayer.stop();
         mediaPlayer.reset();
-        remoteViews = null;
+        super.onDestroy();
     }
 
     private void sendNotification() {
