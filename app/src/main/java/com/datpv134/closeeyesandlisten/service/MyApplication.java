@@ -3,19 +3,26 @@ package com.datpv134.closeeyesandlisten.service;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.Intent;
+
 import android.media.MediaPlayer;
 import android.os.Build;
 
 import com.datpv134.closeeyesandlisten.model.Song;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyApplication extends Application {
 
     public static final String CHANNEL_ID = "CHANNEL_ID";
     public static MediaPlayer mediaPlayer = new MediaPlayer();
     public static Song song;
-    public static Boolean isRunning = false;
-    public static int playNumber = 0;
+    public static List<Song> songList = new ArrayList<Song>();
+    public static int getCurrentPos = 0;
+    public static boolean isRunning = false;
+    public static Boolean isPushNotifi = false;
+    public static boolean isShuffe = false;
+    public static int repeatCode = 0;
 
     @Override
     public void onCreate() {

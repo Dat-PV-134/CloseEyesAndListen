@@ -1,6 +1,7 @@
 package com.datpv134.closeeyesandlisten.service;
 
 import static com.datpv134.closeeyesandlisten.service.MyApplication.CHANNEL_ID;
+import static com.datpv134.closeeyesandlisten.service.MyApplication.isPushNotifi;
 import static com.datpv134.closeeyesandlisten.service.MyApplication.isRunning;
 import static com.datpv134.closeeyesandlisten.service.MyApplication.mediaPlayer;
 
@@ -24,12 +25,12 @@ import com.bumptech.glide.Glide;
 import com.datpv134.closeeyesandlisten.R;
 import com.datpv134.closeeyesandlisten.model.Song;
 import com.datpv134.closeeyesandlisten.ui.MainActivity;
-import com.datpv134.closeeyesandlisten.ui.MusicPlayerActivity;
 
 public class MyService extends Service {
     private static final int ACTION_PAUSE = 1;
     private static final int ACTION_RESUME = 2;
-    private static final int ACTION_CLEAR = 3;
+    private static final int ACTION_NEXT = 3;
+    private static final int ACTION_BACK = 4;
 
     private Song song;
     Bitmap bitmap = null;
@@ -50,13 +51,16 @@ public class MyService extends Service {
             Song temp = (Song) bundle.get("song1");
             isPlaying = bundle.getBoolean("isPlaying", false);
             isNewSong = bundle.getBoolean("isNewSong", false);
+            boolean isNeedNotifi = bundle.getBoolean("Notifi", false);
+            if (isNeedNotifi) {
+                stopSelf();
+            }
             if (isNewSong) {
-                sendMessage(4);
+                sendMessage(5);
             }
             if (temp != null) {
                 song = temp;
 
-                remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
                 sendNotification();
             }
         }
@@ -75,9 +79,13 @@ public class MyService extends Service {
             case ACTION_RESUME:
                 resumeMusic();
                 break;
-            case ACTION_CLEAR:
-                sendMessage(0);
-                stopSelf();
+            case ACTION_NEXT:
+                sendMessage(3);
+                sendNotification();
+                break;
+            case ACTION_BACK:
+                sendMessage(4);
+                sendNotification();
                 break;
             default:
                 break;
@@ -110,12 +118,16 @@ public class MyService extends Service {
     public void onDestroy() {
         mediaPlayer.stop();
         mediaPlayer.reset();
+        isPushNotifi = false;
         super.onDestroy();
     }
 
     private void sendNotification() {
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
+        remoteViews.setImageViewResource(R.id.imgSongNotifi, R.drawable.icon_music);
 
         try {
             while (bitmap == null) {
@@ -136,16 +148,20 @@ public class MyService extends Service {
 
         changeButton();
 
-        remoteViews.setOnClickPendingIntent(R.id.imgClear, getPendingIntent(this, ACTION_CLEAR));
+//        remoteViews.setOnClickPendingIntent(R.id.imgClear, getPendingIntent(this, ACTION_CLEAR));
+        remoteViews.setOnClickPendingIntent(R.id.imgBackNotifi, getPendingIntent(this, ACTION_BACK));
+        remoteViews.setOnClickPendingIntent(R.id.imgNextNotifi, getPendingIntent(this, ACTION_NEXT));
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.icon_fav_onclick)
+                .setSmallIcon(R.drawable.icon_music)
                 .setContentIntent(pendingIntent)
                 .setCustomContentView(remoteViews)
                 .setSound(null)
                 .build();
 
         startForeground(1, notification);
+
+        isPushNotifi = true;
     }
 
     private void changeButton() {

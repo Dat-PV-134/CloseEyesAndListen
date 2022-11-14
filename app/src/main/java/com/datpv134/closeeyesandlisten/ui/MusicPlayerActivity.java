@@ -2,7 +2,10 @@ package com.datpv134.closeeyesandlisten.ui;
 
 import static com.datpv134.closeeyesandlisten.service.MyApplication.mediaPlayer;
 import static com.datpv134.closeeyesandlisten.service.MyApplication.isRunning;
-import static com.datpv134.closeeyesandlisten.service.MyApplication.playNumber;
+import static com.datpv134.closeeyesandlisten.service.MyApplication.songList;
+import static com.datpv134.closeeyesandlisten.service.MyApplication.getCurrentPos;
+import static com.datpv134.closeeyesandlisten.service.MyApplication.isShuffe;
+import static com.datpv134.closeeyesandlisten.service.MyApplication.repeatCode;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -29,7 +32,10 @@ import com.datpv134.closeeyesandlisten.model.Song;
 import com.datpv134.closeeyesandlisten.service.MyApplication;
 import com.datpv134.closeeyesandlisten.service.MyService;
 
-import java.util.Objects;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class MusicPlayerActivity extends AppCompatActivity {
     ActivityMusicPlayerBinding binding;
@@ -38,6 +44,8 @@ public class MusicPlayerActivity extends AppCompatActivity {
     int myAction;
     private Intent intent1;
     private Bundle bundleF = new Bundle();
+    private int isFirstTime = 0;
+
 
     @Override
     public void onResume() {
@@ -56,10 +64,15 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 playOrPause();
             } else if (myAction == 2) {
                 playOrPause();
+            } else if (myAction == 3) {
+                nextSong();
             } else if (myAction == 4) {
+                previousSong();
+            } else if (myAction == 5) {
                 stopService(intent1);
+                bundleF.putBoolean("Notifi", false);
                 bundleF.putSerializable("song1", song);
-                bundleF.putBoolean("isPlaying", true);
+                bundleF.putBoolean("isPlaying", false);
                 bundleF.putBoolean("isNewSong", false);
                 intent1.putExtras(bundleF);
                 startService(intent1);
@@ -78,6 +91,44 @@ public class MusicPlayerActivity extends AppCompatActivity {
         onStop();
     }
 
+    private void startNewSong() {
+        mediaPlayer.stop();
+        mediaPlayer.reset();
+
+        mediaPlayer = new MediaPlayer();
+
+        bundleF.putBoolean("Notifi", false);
+        bundleF.putSerializable("song1", song);
+        bundleF.putBoolean("isPlaying", false);
+        bundleF.putBoolean("isNewSong", true);
+        intent1.putExtras(bundleF);
+        startService(intent1);
+
+        prepareMediaPlayer();
+
+        ((MyApplication) this.getApplication()).setCurrentSong(song);
+    }
+
+
+    private void startOldSong() {
+        binding.sbPlayer.setMax(100);
+        setButtonPlayOrPause();
+
+        continueOldSong();
+        binding.sbPlayer.setSecondaryProgress(100);
+        bundleF.putBoolean("Notifi", false);
+        bundleF.putSerializable("song1", song);
+        bundleF.putBoolean("isPlaying", true);
+        bundleF.putBoolean("isNewSong", false);
+        intent1.putExtras(bundleF);
+        startService(intent1);
+        setButtonPlayOrPause();
+    }
+
+    private void setNewSong() {
+        ((MyApplication) this.getApplication()).setCurrentSong(song);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +137,17 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         isRunning = true;
 
-        song = (Song) getIntent().getSerializableExtra("Song");
-        Song s = (Song) ((MyApplication) this.getApplication()).getCurrentSong();
+        Song s = ((MyApplication) this.getApplication()).getCurrentSong();
 
-        if (song == null) {
+        boolean checkComeBack = false;
+        checkComeBack = getIntent().getBooleanExtra("comeback", false);
+
+        if (!checkComeBack) {
+            songList = (ArrayList<Song>) getIntent().getSerializableExtra("SongList");
+            song = (Song) getIntent().getSerializableExtra("Song");
+            getCurrentPos = Integer.parseInt(song.getId()) - 1;
+            ((MyApplication) this.getApplication()).setCurrentSong(song);
+        } else {
             song = s;
         }
 
@@ -100,42 +158,23 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         intent1 = new Intent(getBaseContext(), MyService.class);
 
-        binding.sbPlayer.setMax(100);
-        setButtonPlayOrPause();
-
+        bundleF.putBoolean("Notifi", false);
         bundleF.putSerializable("song1", song);
         bundleF.putBoolean("isPlaying", false);
         bundleF.putBoolean("isNewSong", false);
         intent1.putExtras(bundleF);
         startService(intent1);
 
-        if (!Objects.equals(s.getId(), song.getId()) || Objects.equals(s.getId(), "-1")) {
-            mediaPlayer.stop();
-            mediaPlayer.reset();
-            mediaPlayer.release();
+        binding.sbPlayer.setMax(100);
 
-            mediaPlayer = new MediaPlayer();
+        if (!mediaPlayer.isPlaying()) {
+            binding.sbPlayer.setProgress((int) (((float) mediaPlayer.getCurrentPosition() / mediaPlayer.getDuration()) * 100));
+        }
 
-            bundleF.putSerializable("song1", song);
-            bundleF.putBoolean("isPlaying", true);
-            bundleF.putBoolean("isNewSong", true);
-            intent1.putExtras(bundleF);
-            startService(intent1);
-
-            prepareMediaPlayer();
-
-            ((MyApplication) this.getApplication()).setCurrentSong(song);
-            playNumber = 0;
-
+        if (s.getId() != song.getId() || s.getId() == "-1") {
+            startNewSong();
         } else {
-            bundleF.putSerializable("song1", song);
-            bundleF.putBoolean("isPlaying", true);
-            bundleF.putBoolean("isNewSong", false);
-            intent1.putExtras(bundleF);
-            startService(intent1);
-            setButtonPlayOrPause();
-            continueOldSong();
-            binding.sbPlayer.setSecondaryProgress(100);
+            startOldSong();
         }
 
 //
@@ -145,7 +184,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
 //        intent1.putExtras(bundleF);
 //
 //        startService(intent1);
-
 
 
 //        mediaPlayer = new MediaPlayer();
@@ -171,7 +209,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
         });
 
 
-
         mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
             @Override
             public void onBufferingUpdate(MediaPlayer mediaPlayer, int i) {
@@ -179,6 +216,12 @@ public class MusicPlayerActivity extends AppCompatActivity {
             }
         });
 
+        setOnCompleteASong();
+
+        onClickOtherButton();
+    }
+
+    private void setOnCompleteASong() {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
@@ -186,41 +229,305 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 binding.imagePlay.setImageResource(R.drawable.icon_play);
                 binding.tvCurrentTime.setText(R.string.zero);
                 mediaPlayer.reset();
-                playNumber++;
-                prepareMediaPlayer();
+
+                if (isFirstTime == 0) {
+                    prepareMediaPlayer();
+                    isFirstTime++;
+                    return;
+                }
+
+                if (repeatCode == 2) {
+                    repeatSong();
+                    return;
+                }
+
+                if (getCurrentPos == (songList.size() - 1)) {
+                    if (repeatCode == 0) {
+                        nextSongNotStart();
+                        return;
+                    }
+                    else if (repeatCode == 1) {
+                        nextSong();
+                        return;
+                    }
+                } else {
+                    nextSong();
+                    return;
+                }
+
 //              binding.tvTotalTime.setText(miliSecondsToTimer(mediaPlayer.getDuration()));
             }
         });
+    }
+
+    private void nextSongNotStart() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+
+        mediaPlayer.reset();
+        mediaPlayer.release();
+
+        mediaPlayer = new MediaPlayer();
+
+
+        song = songList.get(0);
+        getCurrentPos = 0;
+
+        Glide.with(getBaseContext())
+                .load(song.getImage())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(binding.imgSongPlayer);
+
+        try {
+            mediaPlayer.setDataSource(song.getSrc());
+            mediaPlayer.prepare();
+
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    binding.tvTotalTime.setText(miliSecondsToTimer(mediaPlayer.getDuration()));
+                    setNewSong();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        binding.sbPlayer.setSecondaryProgress(100);
+
+        bundleF.putBoolean("Notifi", false);
+        bundleF.putSerializable("song1", song);
+        bundleF.putBoolean("isPlaying", false);
+        bundleF.putBoolean("isNewSong", false);
+        intent1.putExtras(bundleF);
+        startService(intent1);
+    }
+
+
+    private void repeatSong() {
+        try {
+            mediaPlayer.setDataSource(song.getSrc());
+            mediaPlayer.prepare();
+
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mediaPlayer) {
+                    mediaPlayer.start();
+                    binding.imagePlay.setImageResource(R.drawable.icon_pause);
+
+                    bundleF.putBoolean("Notifi", false);
+                    bundleF.putSerializable("song1", song);
+                    bundleF.putBoolean("isPlaying", true);
+                    bundleF.putBoolean("isNewSong", false);
+                    intent1.putExtras(bundleF);
+                    startService(intent1);
+
+                    updateSeekBar();
+                }
+            });
+            binding.tvTotalTime.setText(miliSecondsToTimer(mediaPlayer.getDuration()));
+            ((MyApplication) this.getApplication()).setCurrentSong(song);
+        } catch (Exception e) {
+            Toast.makeText(getBaseContext(), "Loi mang", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void onClickOtherButton() {
+        binding.imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                previousSong();
+            }
+        });
+
+        binding.imgNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nextSong();
+            }
+        });
+
+        binding.imgShuffing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isShuffe) {
+                    Collections.sort(songList, new Comparator<Song>() {
+                        @Override
+                        public int compare(Song song, Song t1) {
+                            return Integer.parseInt(song.getId()) - Integer.parseInt(t1.getId());
+                        }
+                    });
+                    isShuffe = false;
+                    binding.imgShuffing.setImageResource(R.drawable.icon_shuffing);
+                } else {
+                    Collections.shuffle(songList);
+                    isShuffe = true;
+                    binding.imgShuffing.setImageResource(R.drawable.ic_shuffed);
+                }
+            }
+        });
+
+        binding.imgRepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (repeatCode == 0) {
+                    repeatCode = 1;
+                    binding.imgRepeat.setImageResource(R.drawable.ic_repeat_list);
+                } else if (repeatCode == 1) {
+                    repeatCode = 2;
+                    binding.imgRepeat.setImageResource(R.drawable.ic_repeat_one);
+                } else if (repeatCode == 2) {
+                    repeatCode = 0;
+                    binding.imgRepeat.setImageResource(R.drawable.icon_repeat);
+                }
+            }
+        });
+    }
+
+//    private int getPlayRepeat(int repeatCode) {
+//        int playRepeat = 0;
+//
+//        switch (repeatCode) {
+//            case 0: break;
+//            case 1: break;
+//            case 2: break;
+//            default: break;
+//        }
+//
+//        return ;
+//    }
+
+
+    private void nextSong() {
+        bundleF.putBoolean("Notifi", false);
+        bundleF.putSerializable("song1", song);
+        bundleF.putBoolean("isPlaying", false);
+        bundleF.putBoolean("isNewSong", false);
+        intent1.putExtras(bundleF);
+        startService(intent1);
+
+        if (mediaPlayer.isPlaying()) {
+//                        mediaPlayer.pause();
+            mediaPlayer.stop();
+        }
+
+        mediaPlayer.reset();
+        mediaPlayer.release();
+
+        mediaPlayer = new MediaPlayer();
+
+        if (getCurrentPos < (songList.size() - 1)) {
+            song = songList.get(getCurrentPos + 1);
+            getCurrentPos += 1;
+            Glide.with(getBaseContext())
+                    .load(song.getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.imgSongPlayer);
+
+            prepareMediaPlayer();
+        } else {
+            song = songList.get(0);
+            getCurrentPos = 0;
+            Glide.with(getBaseContext())
+                    .load(song.getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.imgSongPlayer);
+
+            bundleF.putBoolean("Notifi", false);
+            bundleF.putSerializable("song1", song);
+            bundleF.putBoolean("isPlaying", true);
+            bundleF.putBoolean("isNewSong", false);
+            intent1.putExtras(bundleF);
+            startService(intent1);
+
+            prepareMediaPlayer();
+        }
+
+        setNewSong();
+
+        binding.sbPlayer.setSecondaryProgress(100);
+
+        setOnCompleteASong();
+    }
+
+    private void previousSong() {
+        bundleF.putBoolean("Notifi", false);
+        bundleF.putSerializable("song1", song);
+        bundleF.putBoolean("isPlaying", false);
+        bundleF.putBoolean("isNewSong", false);
+        intent1.putExtras(bundleF);
+        startService(intent1);
+
+        if (mediaPlayer.isPlaying()) {
+//                        mediaPlayer.pause();
+            mediaPlayer.stop();
+        }
+
+        mediaPlayer.reset();
+        mediaPlayer.release();
+
+        mediaPlayer = new MediaPlayer();
+
+        if (getCurrentPos > 0) {
+            song = songList.get(getCurrentPos - 1);
+            getCurrentPos -= 1;
+            Glide.with(getBaseContext())
+                    .load(song.getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.imgSongPlayer);
+
+            prepareMediaPlayer();
+        } else {
+            song = songList.get(songList.size() - 1);
+            getCurrentPos = songList.size() - 1;
+            Glide.with(getBaseContext())
+                    .load(song.getImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(binding.imgSongPlayer);
+
+            bundleF.putBoolean("Notifi", false);
+            bundleF.putSerializable("song1", song);
+            bundleF.putBoolean("isPlaying", true);
+            bundleF.putBoolean("isNewSong", false);
+            intent1.putExtras(bundleF);
+            startService(intent1);
+
+            prepareMediaPlayer();
+        }
+
+        setNewSong();
+
+        binding.sbPlayer.setSecondaryProgress(100);
+
+        setOnCompleteASong();
     }
 
     private void prepareMediaPlayer() {
         try {
             mediaPlayer.setDataSource(song.getSrc());
             mediaPlayer.prepare();
-            bundleF.putSerializable("song1", song);
-            bundleF.putBoolean("isPlaying", true);
-            bundleF.putBoolean("isNewSong", false);
-            intent1.putExtras(bundleF);
-            startService(intent1);
+
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
-                    if (playNumber <= 1) {
-                        mediaPlayer.start();
-                        binding.imagePlay.setImageResource(R.drawable.icon_pause);
-                    } else {
-                        bundleF.putSerializable("song1", song);
-                        bundleF.putBoolean("isPlaying", false);
-                        bundleF.putBoolean("isNewSong", false);
-                        intent1.putExtras(bundleF);
-                        startService(intent1);
-                    }
+                    mediaPlayer.start();
+                    binding.imagePlay.setImageResource(R.drawable.icon_pause);
+
+                    bundleF.putBoolean("Notifi", false);
+                    bundleF.putSerializable("song1", song);
+                    bundleF.putBoolean("isPlaying", true);
+                    bundleF.putBoolean("isNewSong", false);
+                    intent1.putExtras(bundleF);
+                    startService(intent1);
+
                     updateSeekBar();
                 }
             });
             binding.tvTotalTime.setText(miliSecondsToTimer(mediaPlayer.getDuration()));
+            ((MyApplication) this.getApplication()).setCurrentSong(song);
         } catch (Exception e) {
-            Toast.makeText(getBaseContext(), "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "Loi mang", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -251,6 +558,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
             handler.removeCallbacks(updater);
             mediaPlayer.pause();
             binding.imagePlay.setImageResource(R.drawable.icon_play);
+            bundleF.putBoolean("Notifi", false);
             bundleF.putSerializable("song1", song);
             bundleF.putBoolean("isPlaying", false);
             bundleF.putBoolean("isNewSong", false);
@@ -260,6 +568,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
             mediaPlayer.start();
             binding.imagePlay.setImageResource(R.drawable.icon_pause);
             updateSeekBar();
+            bundleF.putBoolean("Notifi", false);
             bundleF.putSerializable("song1", song);
             bundleF.putBoolean("isPlaying", true);
             bundleF.putBoolean("isNewSong", false);

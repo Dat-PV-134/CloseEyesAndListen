@@ -21,8 +21,6 @@ import com.datpv134.closeeyesandlisten.adapter.IOnClickSong;
 import com.datpv134.closeeyesandlisten.adapter.SongAdapter;
 import com.datpv134.closeeyesandlisten.databinding.FragmentHomeBinding;
 import com.datpv134.closeeyesandlisten.model.Song;
-import com.datpv134.closeeyesandlisten.service.MyApplication;
-import com.datpv134.closeeyesandlisten.service.MyService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +31,8 @@ import retrofit2.Response;
 
 public class HomeFragmet extends Fragment {
     FragmentHomeBinding binding;
-    List<Song> songList;
-    SongAdapter songAdapter;
+    private List<Song> songList;
+    private SongAdapter songAdapter;
 
     public static HomeFragmet newInstance() {
 
@@ -50,7 +48,7 @@ public class HomeFragmet extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 
-        songList = new ArrayList<>();
+        songList = new ArrayList<Song>();
 
         Call<List<Song>> call = APIClientPM.getInstance().getSongs();
 
@@ -68,18 +66,10 @@ public class HomeFragmet extends Fragment {
                     @Override
                     public void onClickSong(Song song) {
 
-
-//                        getActivity().bindService(intent1, serviceConnection, Context.BIND_AUTO_CREATE);
-
-//                        Intent intent = new Intent(getContext(), MainActivity.class);
-//                        intent.putExtra("checkPlaying", true);
-//
-//                        intent.putExtra("song", song);
-//
-//                        startActivity(intent);
-
                         Intent intent2 = new Intent(getContext(), MusicPlayerActivity.class);
                         intent2.putExtra("Song", song);
+                        intent2.putExtra("SongList", (ArrayList<Song>) songList);
+
                         startActivity(intent2);
                     }
                 });

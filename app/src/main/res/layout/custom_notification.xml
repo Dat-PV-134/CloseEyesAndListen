@@ -18,7 +18,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_toStartOf="@id/imgPlayOrPauseNotifi"
+        android:layout_toStartOf="@id/imgBackNotifi"
         android:layout_toEndOf="@id/imgSongNotifi"
         android:orientation="vertical">
 
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="@string/app_name"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/tvSongNotifi"
@@ -36,23 +36,42 @@
             android:layout_height="wrap_content"
             android:text="@string/app_name"
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/imgPlayOrPauseNotifi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/imgBackNotifi"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="30dp"
-        android:layout_toStartOf="@id/imgClear"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@id/imgPlayOrPauseNotifi"
+        android:src="@drawable/icon_back" />
+
+
+    <ImageView
+        android:id="@+id/imgPlayOrPauseNotifi"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@id/imgNextNotifi"
         android:src="@drawable/icon_pause_2" />
 
     <ImageView
-        android:id="@+id/imgClear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/imgNextNotifi"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_baseline_clear_24" />
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/icon_next" />
+
+    <!--    <ImageView-->
+    <!--        android:id="@+id/imgClear"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_alignParentEnd="true"-->
+    <!--        android:layout_centerVertical="true"-->
+    <!--        android:src="@drawable/ic_baseline_clear_24" />-->
 </RelativeLayout>

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Song implements Serializable {
+public class Song implements Serializable, Comparable<Song> {
     @SerializedName("id")
     @Expose
     private String id;
@@ -56,5 +56,12 @@ public class Song implements Serializable {
 
     public void setSrc(String src) {
         this.src = src;
+    }
+
+    @Override
+    public int compareTo(Song song) {
+        int aSong = Integer.parseInt(id);
+        int bSong = Integer.parseInt(song.getId());
+        return aSong - bSong;
     }
 }

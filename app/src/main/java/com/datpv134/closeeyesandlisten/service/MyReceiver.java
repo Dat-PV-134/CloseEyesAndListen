@@ -14,7 +14,7 @@ public class MyReceiver extends BroadcastReceiver {
 
         Intent intentService;
 
-        if (isRunning || actionMusic == 4) {
+        if (isRunning || actionMusic == 5) {
             intentService = new Intent(context, MyService.class);
             intentService.putExtra("action_music_service", actionMusic);
 
@@ -34,7 +34,12 @@ public class MyReceiver extends BroadcastReceiver {
                 context.startService(intentService);
             } else if (actionMusic == 3) {
                 intentService = new Intent(context, MyService.class);
-                intentService.putExtra("action_music_service", actionMusic);
+                intentService.putExtra("action_music_service", 3);
+
+                context.startService(intentService);
+            } else if (actionMusic == 4) {
+                intentService = new Intent(context, MyService.class);
+                intentService.putExtra("action_music_service", 4);
 
                 context.startService(intentService);
             }

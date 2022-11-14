@@ -1,6 +1,7 @@
 package com.datpv134.closeeyesandlisten.ui;
 
 import static com.datpv134.closeeyesandlisten.service.MyApplication.CHANNEL_ID;
+import static com.datpv134.closeeyesandlisten.service.MyApplication.isPushNotifi;
 import static com.datpv134.closeeyesandlisten.service.MyApplication.isRunning;
 import static com.datpv134.closeeyesandlisten.service.MyApplication.mediaPlayer;
 
@@ -17,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.datpv134.closeeyesandlisten.R;
 import com.datpv134.closeeyesandlisten.databinding.ActivityMainBinding;
-import com.datpv134.closeeyesandlisten.model.Song;
 import com.datpv134.closeeyesandlisten.service.MyService;
 
 import java.io.Serializable;
@@ -26,13 +26,14 @@ import java.io.Serializable;
 public class MainActivity extends AppCompatActivity implements Serializable {
     ActivityMainBinding binding;
     private final Handler handler = new Handler();
-    Song song;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (isRunning || mediaPlayer.isPlaying()) {
-            startActivity(new Intent(getBaseContext(), MusicPlayerActivity.class));
+        if (isRunning || mediaPlayer.isPlaying() || isPushNotifi) {
+            Intent intent = new Intent(getBaseContext(), MusicPlayerActivity.class);
+            intent.putExtra("comeback", true);
+            startActivity(intent);
         }
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
