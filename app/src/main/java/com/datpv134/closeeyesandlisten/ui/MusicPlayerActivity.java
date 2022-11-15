@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.SeekBar;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class MusicPlayerActivity extends AppCompatActivity {
     ActivityMusicPlayerBinding binding;
@@ -59,7 +61,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Extract data included in the Intent
-            myAction = intent.getIntExtra("my_action", 0);
+            myAction = intent.getIntExtra("my_action", -1);
             if (myAction == 1) {
                 playOrPause();
             } else if (myAction == 2) {
@@ -70,7 +72,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 previousSong();
             } else if (myAction == 5) {
                 stopService(intent1);
-                bundleF.putBoolean("Notifi", false);
                 bundleF.putSerializable("song1", song);
                 bundleF.putBoolean("isPlaying", false);
                 bundleF.putBoolean("isNewSong", false);
@@ -97,7 +98,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         mediaPlayer = new MediaPlayer();
 
-        bundleF.putBoolean("Notifi", false);
         bundleF.putSerializable("song1", song);
         bundleF.putBoolean("isPlaying", false);
         bundleF.putBoolean("isNewSong", true);
@@ -113,16 +113,8 @@ public class MusicPlayerActivity extends AppCompatActivity {
     private void startOldSong() {
         binding.sbPlayer.setMax(100);
         setButtonPlayOrPause();
-
-        continueOldSong();
         binding.sbPlayer.setSecondaryProgress(100);
-        bundleF.putBoolean("Notifi", false);
-        bundleF.putSerializable("song1", song);
-        bundleF.putBoolean("isPlaying", true);
-        bundleF.putBoolean("isNewSong", false);
-        intent1.putExtras(bundleF);
-        startService(intent1);
-        setButtonPlayOrPause();
+        continueOldSong();
     }
 
     private void setNewSong() {
@@ -135,18 +127,15 @@ public class MusicPlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_music_player);
 
-        isRunning = true;
-
         Song s = ((MyApplication) this.getApplication()).getCurrentSong();
 
-        boolean checkComeBack = false;
-        checkComeBack = getIntent().getBooleanExtra("comeback", false);
+        boolean checkComeBack = getIntent().getBooleanExtra("comeback", false);
 
         if (!checkComeBack) {
             songList = (ArrayList<Song>) getIntent().getSerializableExtra("SongList");
             song = (Song) getIntent().getSerializableExtra("Song");
             getCurrentPos = Integer.parseInt(song.getId()) - 1;
-            ((MyApplication) this.getApplication()).setCurrentSong(song);
+            Log.e("yep", "yep");
         } else {
             song = s;
         }
@@ -158,12 +147,11 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         intent1 = new Intent(getBaseContext(), MyService.class);
 
-        bundleF.putBoolean("Notifi", false);
-        bundleF.putSerializable("song1", song);
-        bundleF.putBoolean("isPlaying", false);
-        bundleF.putBoolean("isNewSong", false);
-        intent1.putExtras(bundleF);
-        startService(intent1);
+//        bundleF.putSerializable("song1", song);
+//        bundleF.putBoolean("isPlaying", false);
+//        bundleF.putBoolean("isNewSong", false);
+//        intent1.putExtras(bundleF);
+//        startService(intent1);
 
         binding.sbPlayer.setMax(100);
 
@@ -171,9 +159,14 @@ public class MusicPlayerActivity extends AppCompatActivity {
             binding.sbPlayer.setProgress((int) (((float) mediaPlayer.getCurrentPosition() / mediaPlayer.getDuration()) * 100));
         }
 
-        if (s.getId() != song.getId() || s.getId() == "-1") {
+        Log.e("current", s.getId());
+        Log.e("Song", song.getId());
+
+        if (!Objects.equals(song.getId(), s.getId()) || s.getId() == "-1") {
             startNewSong();
+            Log.e("new song", "new song");
         } else {
+            Log.e("old song", "old song");
             startOldSong();
         }
 
@@ -216,6 +209,8 @@ public class MusicPlayerActivity extends AppCompatActivity {
             }
         });
 
+        isRunning = true;
+
         setOnCompleteASong();
 
         onClickOtherButton();
@@ -245,8 +240,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
                     if (repeatCode == 0) {
                         nextSongNotStart();
                         return;
-                    }
-                    else if (repeatCode == 1) {
+                    } else if (repeatCode == 1) {
                         nextSong();
                         return;
                     }
@@ -296,7 +290,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
         binding.sbPlayer.setSecondaryProgress(100);
 
-        bundleF.putBoolean("Notifi", false);
         bundleF.putSerializable("song1", song);
         bundleF.putBoolean("isPlaying", false);
         bundleF.putBoolean("isNewSong", false);
@@ -316,7 +309,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
                     mediaPlayer.start();
                     binding.imagePlay.setImageResource(R.drawable.icon_pause);
 
-                    bundleF.putBoolean("Notifi", false);
                     bundleF.putSerializable("song1", song);
                     bundleF.putBoolean("isPlaying", true);
                     bundleF.putBoolean("isNewSong", false);
@@ -400,7 +392,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
 
 
     private void nextSong() {
-        bundleF.putBoolean("Notifi", false);
         bundleF.putSerializable("song1", song);
         bundleF.putBoolean("isPlaying", false);
         bundleF.putBoolean("isNewSong", false);
@@ -434,7 +425,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.imgSongPlayer);
 
-            bundleF.putBoolean("Notifi", false);
             bundleF.putSerializable("song1", song);
             bundleF.putBoolean("isPlaying", true);
             bundleF.putBoolean("isNewSong", false);
@@ -452,7 +442,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
     }
 
     private void previousSong() {
-        bundleF.putBoolean("Notifi", false);
         bundleF.putSerializable("song1", song);
         bundleF.putBoolean("isPlaying", false);
         bundleF.putBoolean("isNewSong", false);
@@ -486,7 +475,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(binding.imgSongPlayer);
 
-            bundleF.putBoolean("Notifi", false);
             bundleF.putSerializable("song1", song);
             bundleF.putBoolean("isPlaying", true);
             bundleF.putBoolean("isNewSong", false);
@@ -514,7 +502,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
                     mediaPlayer.start();
                     binding.imagePlay.setImageResource(R.drawable.icon_pause);
 
-                    bundleF.putBoolean("Notifi", false);
                     bundleF.putSerializable("song1", song);
                     bundleF.putBoolean("isPlaying", true);
                     bundleF.putBoolean("isNewSong", false);
@@ -525,7 +512,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 }
             });
             binding.tvTotalTime.setText(miliSecondsToTimer(mediaPlayer.getDuration()));
-            ((MyApplication) this.getApplication()).setCurrentSong(song);
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), "Loi mang", Toast.LENGTH_SHORT).show();
         }
@@ -558,7 +544,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
             handler.removeCallbacks(updater);
             mediaPlayer.pause();
             binding.imagePlay.setImageResource(R.drawable.icon_play);
-            bundleF.putBoolean("Notifi", false);
             bundleF.putSerializable("song1", song);
             bundleF.putBoolean("isPlaying", false);
             bundleF.putBoolean("isNewSong", false);
@@ -568,7 +553,6 @@ public class MusicPlayerActivity extends AppCompatActivity {
             mediaPlayer.start();
             binding.imagePlay.setImageResource(R.drawable.icon_pause);
             updateSeekBar();
-            bundleF.putBoolean("Notifi", false);
             bundleF.putSerializable("song1", song);
             bundleF.putBoolean("isPlaying", true);
             bundleF.putBoolean("isNewSong", false);

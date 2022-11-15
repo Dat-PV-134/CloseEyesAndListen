@@ -5,6 +5,7 @@ import static com.datpv134.closeeyesandlisten.service.MyApplication.isPushNotifi
 import static com.datpv134.closeeyesandlisten.service.MyApplication.isRunning;
 import static com.datpv134.closeeyesandlisten.service.MyApplication.mediaPlayer;
 
+import android.app.Application;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -35,7 +36,6 @@ public class MyService extends Service {
     private Song song;
     Bitmap bitmap = null;
     boolean isPlaying, isNewSong;
-    RemoteViews remoteViews;
 
     @Override
     public void onCreate() {
@@ -51,17 +51,14 @@ public class MyService extends Service {
             Song temp = (Song) bundle.get("song1");
             isPlaying = bundle.getBoolean("isPlaying", false);
             isNewSong = bundle.getBoolean("isNewSong", false);
-            boolean isNeedNotifi = bundle.getBoolean("Notifi", false);
-            if (isNeedNotifi) {
-                stopSelf();
-            }
             if (isNewSong) {
                 sendMessage(5);
             }
             if (temp != null) {
-                song = temp;
+                song = ((MyApplication) this.getApplication()).getCurrentSong();;
 
-                sendNotification();
+                sendNotificationMedia();
+                sendNotificationMedia();
             }
         }
 
@@ -81,11 +78,11 @@ public class MyService extends Service {
                 break;
             case ACTION_NEXT:
                 sendMessage(3);
-                sendNotification();
+                sendNotificationMedia();
                 break;
             case ACTION_BACK:
                 sendMessage(4);
-                sendNotification();
+                sendNotificationMedia();
                 break;
             default:
                 break;
@@ -97,7 +94,7 @@ public class MyService extends Service {
             sendMessage(1);
         }
         isPlaying = false;
-        sendNotification();
+        sendNotificationMedia();
     }
 
     private void resumeMusic() {
@@ -105,7 +102,7 @@ public class MyService extends Service {
             sendMessage(2);
         }
         isPlaying = true;
-        sendNotification();
+        sendNotificationMedia();
     }
 
     private void sendMessage(int action) {
@@ -122,57 +119,105 @@ public class MyService extends Service {
         super.onDestroy();
     }
 
-    private void sendNotification() {
-        Intent intent = new Intent(getBaseContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//    private void sendNotification() {
+//        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
+//        remoteViews.setImageViewResource(R.id.imgSongNotifi, R.drawable.icon_music);
+//
+//        try {
+//            while (bitmap == null) {
+//                bitmap = Glide.with(getBaseContext())
+//                        .asBitmap()
+//                        .load(song.getImage())
+//                        .submit(512, 512)
+//                        .get();
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        remoteViews.setImageViewBitmap(R.id.imgSongNotifi, bitmap);
+//        remoteViews.setTextViewText(R.id.tvTitle, "Hello");
+//        remoteViews.setTextViewText(R.id.tvSongNotifi, song.getName());
+//        remoteViews.setImageViewResource(R.id.imgPlayOrPauseNotifi, R.drawable.icon_pause_2);
+//
+//        changeButton();
+//
+////        remoteViews.setOnClickPendingIntent(R.id.imgClear, getPendingIntent(this, ACTION_CLEAR));
+//        remoteViews.setOnClickPendingIntent(R.id.imgBackNotifi, getPendingIntent(this, ACTION_BACK));
+//        remoteViews.setOnClickPendingIntent(R.id.imgNextNotifi, getPendingIntent(this, ACTION_NEXT));
+//
+//        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+//                .setSmallIcon(R.drawable.icon_music)
+//                .setContentIntent(pendingIntent)
+//                .setCustomContentView(remoteViews)
+//                .setSound(null)
+//                .build();
+//
+//        startForeground(1, notification);
+//
+//        isPushNotifi = true;
+//    }
 
-        remoteViews = new RemoteViews(getPackageName(), R.layout.custom_notification);
-        remoteViews.setImageViewResource(R.id.imgSongNotifi, R.drawable.icon_music);
-
+    private void sendNotificationMedia() {
         try {
-            while (bitmap == null) {
-                bitmap = Glide.with(getBaseContext())
+            bitmap = Glide.with(getBaseContext())
                         .asBitmap()
                         .load(song.getImage())
                         .submit(512, 512)
                         .get();
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        remoteViews.setImageViewBitmap(R.id.imgSongNotifi, bitmap);
-        remoteViews.setTextViewText(R.id.tvTitle, "Hello");
-        remoteViews.setTextViewText(R.id.tvSongNotifi, song.getName());
-        remoteViews.setImageViewResource(R.id.imgPlayOrPauseNotifi, R.drawable.icon_pause_2);
-
-        changeButton();
-
-//        remoteViews.setOnClickPendingIntent(R.id.imgClear, getPendingIntent(this, ACTION_CLEAR));
-        remoteViews.setOnClickPendingIntent(R.id.imgBackNotifi, getPendingIntent(this, ACTION_BACK));
-        remoteViews.setOnClickPendingIntent(R.id.imgNextNotifi, getPendingIntent(this, ACTION_NEXT));
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(getBaseContext(), CHANNEL_ID)
+                // Show controls on lock screen even when user hides sensitive content.
+                .setContentTitle("Hello")
+                .setContentText(song.getName())
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setSmallIcon(R.drawable.icon_music)
+                .setOngoing(false)
                 .setContentIntent(pendingIntent)
-                .setCustomContentView(remoteViews)
-                .setSound(null)
-                .build();
+                // Add media control buttons that invoke intents in your media service
+//                .addAction(R.drawable.icon_back, "Previous", getPendingIntent(this, ACTION_BACK)) // #0
+//                .addAction(R.drawable.icon_pause, "Pause", getPendingIntent(this, ACTION_PAUSE))  // #1
+//                .addAction(R.drawable.icon_next, "Next", getPendingIntent(this, ACTION_NEXT))     // #2
+                // Apply the media style template
+                .setLargeIcon(bitmap)
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0, 1, 2 /* #1: pause button */));
 
-        startForeground(1, notification);
+        if (isPlaying) {
+            notification.addAction(R.drawable.icon_back, "Previous", getPendingIntent(this, ACTION_BACK)) // #0
+                    .addAction(R.drawable.icon_pause_2, "Pause", getPendingIntent(this, ACTION_PAUSE))  // #1
+                    .addAction(R.drawable.icon_next, "Next", getPendingIntent(this, ACTION_NEXT));
+        } else {
+            notification.addAction(R.drawable.icon_back, "Previous", getPendingIntent(this, ACTION_BACK)) // #0
+                    .addAction(R.drawable.ic_play_2, "Pause", getPendingIntent(this, ACTION_RESUME))  // #1
+                    .addAction(R.drawable.icon_next, "Next", getPendingIntent(this, ACTION_NEXT));
+        }
+
+        Notification notification1 = notification.build();
+
+        startForeground(1, notification1);
 
         isPushNotifi = true;
     }
 
-    private void changeButton() {
-        if (isPlaying) {
-            remoteViews.setOnClickPendingIntent(R.id.imgPlayOrPauseNotifi, getPendingIntent(this, ACTION_PAUSE));
-            remoteViews.setImageViewResource(R.id.imgPlayOrPauseNotifi, R.drawable.icon_pause_2);
-        } else {
-            remoteViews.setOnClickPendingIntent(R.id.imgPlayOrPauseNotifi, getPendingIntent(this, ACTION_RESUME));
-            remoteViews.setImageViewResource(R.id.imgPlayOrPauseNotifi, R.drawable.ic_play_2);
-        }
-    }
+//    private void changeButton() {
+//        if (isPlaying) {
+//            remoteViews.setOnClickPendingIntent(R.id.imgPlayOrPauseNotifi, getPendingIntent(this, ACTION_PAUSE));
+//            remoteViews.setImageViewResource(R.id.imgPlayOrPauseNotifi, R.drawable.icon_pause_2);
+//        } else {
+//            remoteViews.setOnClickPendingIntent(R.id.imgPlayOrPauseNotifi, getPendingIntent(this, ACTION_RESUME));
+//            remoteViews.setImageViewResource(R.id.imgPlayOrPauseNotifi, R.drawable.ic_play_2);
+//        }
+//    }
 
     private PendingIntent getPendingIntent(Context context, int action) {
         Intent intent = new Intent(this, MyReceiver.class);
