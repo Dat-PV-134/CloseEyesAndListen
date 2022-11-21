@@ -21,17 +21,35 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/imgSongPlayer">
 
-            <TextView
-                android:id="@+id/tvSongName"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="Hello"
-                android:textColor="@color/white"
-                android:textSize="36sp"
-                android:textStyle="bold" />
+                android:layout_centerVertical="true"
+                android:layout_marginStart="30dp">
+
+                <TextView
+                    android:id="@+id/tvSongName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:text="Hello"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvSongAuthor"
+                    android:layout_below="@id/tvSongName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentStart="true"
+                    android:text="Hello"
+                    android:textColor="@color/gray"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/iconFav"
@@ -39,7 +57,7 @@
                 android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="30dp"
                 android:src="@drawable/icon_fav_white" />
         </RelativeLayout>
 
@@ -48,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/layoutSongName"
-            android:layout_margin="20dp">
+            android:layout_margin="30dp">
 
             <TextView
                 android:id="@+id/tvCurrentTime"
@@ -81,8 +99,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/layoutTime"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp">
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp">
 
             <ImageView
                 android:id="@+id/imgShuffing"
@@ -99,7 +117,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/imagePlay"
                 android:layout_toEndOf="@id/imgShuffing"
-                android:src="@drawable/icon_back" />
+                android:src="@drawable/icon_previous_song" />
 
             <ImageView
                 android:id="@+id/imagePlay"

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,6 +54,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
                 iOnClickSong.onClickSong(song);
             }
         });
+
+        holder.name.setText(song.getName());
+        holder.author.setText(song.getAuthor());
     }
 
     @Override
@@ -62,11 +66,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgSong;
+        TextView name, author;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imgSong = itemView.findViewById(R.id.imgSong);
+            name = itemView.findViewById(R.id.tvName);
+            author = itemView.findViewById(R.id.tvAuthor);
         }
     }
 }

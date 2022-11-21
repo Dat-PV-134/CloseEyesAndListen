@@ -22,18 +22,22 @@
                     android:weightSum="6">
 
                     <EditText
+                        android:maxLines="1"
+                        android:id="@+id/sbSearch"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_weight="4"
                         android:background="@drawable/search_bar"
-                        android:drawableLeft="@drawable/icon_search"
-                        android:hint="Tìm kiếm"
+                        android:drawableStart="@drawable/icon_search"
+                        android:hint="@string/search"
                         android:padding="10dp"
+                        android:textColor="@color/white"
                         android:textColorHint="@color/white" />
 
                     <ImageView
+                        android:id="@+id/imgNotifiHome"
                         android:layout_width="0dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center"
@@ -42,6 +46,7 @@
                         android:src="@drawable/icon_notifi" />
 
                     <ImageView
+                        android:id="@+id/imgHistoryHome"
                         android:layout_width="0dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center"
@@ -51,12 +56,32 @@
                         android:src="@drawable/icon_history" />
                 </LinearLayout>
 
-                <RelativeLayout
+                <TextView
+                    android:id="@+id/tvSearchTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/top_bar"
+                    android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginEnd="20dp">
+                    android:text="Kết quả tìm kiếm"
+                    android:textColor="@color/main_green"
+                    android:textSize="24sp"
+                    android:visibility="gone"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvSongSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/tvSearchTitle"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/bottomLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/top_bar"
+                    android:layout_marginTop="10dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -73,9 +98,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
-                                android:text="Nhạc thư giãn"
+                                android:text="Thư giãn"
                                 android:textColor="@color/white"
-                                android:textSize="24sp"
+                                android:textSize="20sp"
                                 android:textStyle="bold" />
 
                             <androidx.recyclerview.widget.RecyclerView
@@ -97,9 +122,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
-                                android:text="Những bài hát tình yêu"
+                                android:text="Tình yêu"
                                 android:textColor="@color/white"
-                                android:textSize="24sp"
+                                android:textSize="20sp"
                                 android:textStyle="bold" />
 
                             <androidx.recyclerview.widget.RecyclerView
@@ -121,9 +146,9 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
-                                android:text="Nhạc remix"
+                                android:text="Remix"
                                 android:textColor="@color/white"
-                                android:textSize="24sp"
+                                android:textSize="20sp"
                                 android:textStyle="bold" />
 
                             <androidx.recyclerview.widget.RecyclerView
@@ -142,68 +167,68 @@
             </RelativeLayout>
         </ScrollView>
 
-<!--        <RelativeLayout-->
-<!--            android:id="@+id/layoutSongPlayingSmall"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="50dp"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_marginStart="5dp"-->
-<!--            android:layout_marginEnd="5dp"-->
-<!--            android:layout_marginBottom="60dp"-->
-<!--            android:background="@drawable/search_bar">-->
+        <!--        <RelativeLayout-->
+        <!--            android:id="@+id/layoutSongPlayingSmall"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="50dp"-->
+        <!--            android:layout_alignParentBottom="true"-->
+        <!--            android:layout_marginStart="5dp"-->
+        <!--            android:layout_marginEnd="5dp"-->
+        <!--            android:layout_marginBottom="60dp"-->
+        <!--            android:background="@drawable/search_bar">-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/imgSongPlaying"-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:layout_centerVertical="true"-->
-<!--                android:layout_marginStart="10dp"-->
-<!--                android:src="@drawable/icon_home" />-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/imgSongPlaying"-->
+        <!--                android:layout_width="40dp"-->
+        <!--                android:layout_height="40dp"-->
+        <!--                android:layout_centerVertical="true"-->
+        <!--                android:layout_marginStart="10dp"-->
+        <!--                android:src="@drawable/icon_home" />-->
 
-<!--            <LinearLayout-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_centerVertical="true"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_toEndOf="@id/imgSongPlaying"-->
-<!--                android:gravity="center_vertical"-->
-<!--                android:orientation="vertical"-->
-<!--                android:weightSum="2">-->
+        <!--            <LinearLayout-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_centerVertical="true"-->
+        <!--                android:layout_marginStart="20dp"-->
+        <!--                android:layout_toEndOf="@id/imgSongPlaying"-->
+        <!--                android:gravity="center_vertical"-->
+        <!--                android:orientation="vertical"-->
+        <!--                android:weightSum="2">-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvSongPlayingName"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Tuong quan"-->
-<!--                    android:textColor="@color/white"-->
-<!--                    android:textSize="16sp" />-->
+        <!--                <TextView-->
+        <!--                    android:id="@+id/tvSongPlayingName"-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:text="Tuong quan"-->
+        <!--                    android:textColor="@color/white"-->
+        <!--                    android:textSize="16sp" />-->
 
-<!--                <TextView-->
-<!--                    android:id="@+id/tvSongPlayingAuthor"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Nhat phong"-->
-<!--                    android:textColor="@color/gray_2"-->
-<!--                    android:textSize="14sp" />-->
-<!--            </LinearLayout>-->
+        <!--                <TextView-->
+        <!--                    android:id="@+id/tvSongPlayingAuthor"-->
+        <!--                    android:layout_width="wrap_content"-->
+        <!--                    android:layout_height="wrap_content"-->
+        <!--                    android:text="Nhat phong"-->
+        <!--                    android:textColor="@color/gray_2"-->
+        <!--                    android:textSize="14sp" />-->
+        <!--            </LinearLayout>-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/imgPauseOrResume"-->
-<!--                android:layout_width="24dp"-->
-<!--                android:layout_height="24dp"-->
-<!--                android:layout_alignParentEnd="true"-->
-<!--                android:layout_centerVertical="true"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:src="@drawable/icon_pause_2" />-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/imgPauseOrResume"-->
+        <!--                android:layout_width="24dp"-->
+        <!--                android:layout_height="24dp"-->
+        <!--                android:layout_alignParentEnd="true"-->
+        <!--                android:layout_centerVertical="true"-->
+        <!--                android:layout_marginEnd="20dp"-->
+        <!--                android:src="@drawable/icon_pause_2" />-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/imgFavSongPlaying"-->
-<!--                android:layout_width="24dp"-->
-<!--                android:layout_height="24dp"-->
-<!--                android:layout_centerVertical="true"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:layout_toStartOf="@id/imgPauseOrResume"-->
-<!--                android:src="@drawable/icon_fav_white" />-->
-<!--        </RelativeLayout>-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/imgFavSongPlaying"-->
+        <!--                android:layout_width="24dp"-->
+        <!--                android:layout_height="24dp"-->
+        <!--                android:layout_centerVertical="true"-->
+        <!--                android:layout_marginEnd="20dp"-->
+        <!--                android:layout_toStartOf="@id/imgPauseOrResume"-->
+        <!--                android:src="@drawable/icon_fav_white" />-->
+        <!--        </RelativeLayout>-->
     </RelativeLayout>
 </layout>

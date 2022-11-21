@@ -3,9 +3,7 @@ package com.datpv134.closeeyesandlisten.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
-public class Song implements Serializable, Comparable<Song> {
+public class MyNotification {
     @SerializedName("id")
     @Expose
     private String id;
@@ -15,27 +13,23 @@ public class Song implements Serializable, Comparable<Song> {
     @SerializedName("author")
     @Expose
     private String author;
-    @SerializedName("playList")
-    @Expose
-    private String playList;
     @SerializedName("image")
     @Expose
     private String image;
     @SerializedName("src")
     @Expose
     private String src;
+    @SerializedName("updateTime")
+    @Expose
+    private String updateTime;
 
-    public Song(String id, String name, String author, String playList, String image, String src) {
+    public MyNotification(String id, String name, String author, String image, String src, String updateTime) {
         this.id = id;
         this.name = name;
         this.author = author;
-        this.playList = playList;
         this.image = image;
         this.src = src;
-    }
-
-    public Song() {
-
+        this.updateTime = updateTime;
     }
 
     public String getId() {
@@ -62,14 +56,6 @@ public class Song implements Serializable, Comparable<Song> {
         this.author = author;
     }
 
-    public String getPlayList() {
-        return playList;
-    }
-
-    public void setPlayList(String playList) {
-        this.playList = playList;
-    }
-
     public String getImage() {
         return image;
     }
@@ -86,10 +72,11 @@ public class Song implements Serializable, Comparable<Song> {
         this.src = src;
     }
 
-    @Override
-    public int compareTo(Song song) {
-        int aSong = Integer.parseInt(id);
-        int bSong = Integer.parseInt(song.getId());
-        return aSong - bSong;
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }
