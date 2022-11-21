@@ -104,14 +104,45 @@ public class MyService extends Service {
             case ACTION_BACK:
                 if (isRunning) {
                     sendMessage(4);
+                    sendNotificationMedia();
                 } else {
-                    //previousSongInForeground();
+                    previousSongInForeground();
+                    isPlaying = true;
+                    sendNotificationMedia();
                 }
                 sendNotificationMedia();
                 break;
             default:
                 break;
         }
+    }
+
+    private void previousSongInForeground() {
+        if (mediaPlayer.isPlaying()) {
+//                        mediaPlayer.pause();
+            mediaPlayer.stop();
+        }
+
+        mediaPlayer.reset();
+        mediaPlayer.release();
+
+        mediaPlayer = new MediaPlayer();
+
+        if (getCurrentPos > 0) {
+            song = songListInHome.get(getCurrentPos - 1);
+            getCurrentPos -= 1;
+
+            prepareMediaPlayerInService();
+        } else {
+            song = songListInHome.get(songListInHome.size() - 1);
+            getCurrentPos = songListInHome.size() - 1;
+
+            prepareMediaPlayerInService();
+        }
+
+        setNewSong();
+
+        setOnCompleteASongInService();
     }
 
     private void nextSongInForeground() {
