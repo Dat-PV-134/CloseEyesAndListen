@@ -27,11 +27,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/custom_button_style2"
+                android:background="@drawable/custom_button_style1"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:text="Đăng nhập"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
             <Button
                 android:id="@+id/btnSignUp"
@@ -39,11 +39,11 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="20dp"
                 android:layout_toEndOf="@id/btnSignIn"
-                android:background="@drawable/custom_button_style1"
+                android:background="@drawable/custom_button_style2"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
                 android:text="Đăng ký"
-                android:textColor="@color/main_green" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/tvHelloUser"
@@ -72,7 +72,7 @@
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
             android:text="Chỉnh sửa thông tin"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <TextView
@@ -89,8 +89,8 @@
             android:drawableEnd="@drawable/arrow_right"
             android:drawablePadding="10dp"
             android:gravity="center_vertical"
-            android:text="Chỉnh sửa thông tin"
-            android:textColor="@color/black"
+            android:text="Đổi mật khẩu"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <TextView
@@ -101,7 +101,7 @@
             android:layout_marginStart="30sp"
             android:layout_marginTop="30dp"
             android:text="Playlist của tôi"
-            android:textColor="@color/main_green"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:visibility="visible" />
 
@@ -161,10 +161,10 @@
             android:layout_marginTop="50dp"
             android:layout_marginEnd="20dp"
             android:visibility="gone"
-            android:background="@drawable/custom_button_style2"
+            android:background="@drawable/custom_button_style1"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:text="Đăng xuất"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
     </RelativeLayout>
 </layout>

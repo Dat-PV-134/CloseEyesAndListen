@@ -47,16 +47,12 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     ActivityMainBinding binding;
     boolean isOpenNotifi = false;
     boolean isFavFragment = false;
-    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        isOpenNotifi = getIntent().getBooleanExtra("openNotifi", false);
 
-        if (getIntent().getBooleanExtra("fromService", false)) {
-            startActivity(new Intent(getBaseContext(), MusicPlayerActivity.class));
-        }
+        isOpenNotifi = getIntent().getBooleanExtra("openNotifi", false);
 
         if (isOpenNotifi) {
             binding.vChat.setVisibility(View.GONE);
@@ -67,12 +63,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         }
 
         onClickNavigationButton();
-
-//        if ((isRunning || mediaPlayer.isPlaying() || isPushNotifi) && !isOpenNotifi) {
-//            Intent intent = new Intent(getBaseContext(), MusicPlayerActivity.class);
-//            intent.putExtra("comeback", true);
-//            startActivity(intent);
-//        }
 
         binding.vChat.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -12,7 +12,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
             android:text="@string/m_i_c_p_nh_t"
-            android:textColor="@color/main_green"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 

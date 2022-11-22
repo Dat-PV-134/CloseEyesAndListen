@@ -13,7 +13,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="150dp"
             android:text="Close Eyes And Listen"
-            android:textColor="@color/main_green"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -60,10 +60,10 @@
             android:layout_alignParentEnd="true"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="30dp"
-            android:textSize="14sp"
             android:layout_marginBottom="20dp"
             android:text="Quên mật khẩu?"
-            android:textColor="@color/main_green" />
+            android:textColor="@color/main_green"
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/btnSignIn"

@@ -190,6 +190,13 @@ public class HomeFragmet extends Fragment {
         binding.rvLove.setAdapter(loveAdapter);
         binding.rvRemix.setAdapter(remixAdapter);
 
+        binding.imgHistoryHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), InUpdatingActivity.class));
+            }
+        });
+
         return binding.getRoot();
     }
 

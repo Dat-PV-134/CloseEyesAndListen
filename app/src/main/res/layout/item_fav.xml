@@ -54,6 +54,6 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
-            android:src="@drawable/icon_fav_onclick" />
+            android:src="@drawable/ic_baseline_favorite_24" />
     </RelativeLayout>
 </RelativeLayout>

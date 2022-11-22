@@ -41,6 +41,13 @@ public class RegisterActivity extends AppCompatActivity {
                 registerUser();
             }
         });
+
+        binding.tvSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getBaseContext(), LoginActivity.class));
+            }
+        });
     }
 
     private void registerUser() {

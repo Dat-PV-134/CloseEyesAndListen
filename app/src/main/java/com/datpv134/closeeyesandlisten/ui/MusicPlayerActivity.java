@@ -86,7 +86,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
                     if (strFav != null && !strFav.equals("")) {
                         if (strFav.contains(";" + song.getId() + ";")) {
                             isFav = true;
-                            binding.iconFav.setImageResource(R.drawable.icon_fav_onclick);
+                            binding.iconFav.setImageResource(R.drawable.ic_baseline_favorite_24);
                         } else {
                             isFav = false;
                             binding.iconFav.setImageResource(R.drawable.icon_fav);
@@ -480,7 +480,7 @@ public class MusicPlayerActivity extends AppCompatActivity {
                 } else {
                     strFav += song.getId() + ";";
                     database.getReference().child("Users").child(userId).child("favoriteSong").setValue(strFav);
-                    binding.iconFav.setImageResource(R.drawable.icon_fav_onclick);
+                    binding.iconFav.setImageResource(R.drawable.ic_baseline_favorite_24);
                     favoriteList.add(favoriteSong);
                     isFav = true;
                 }
