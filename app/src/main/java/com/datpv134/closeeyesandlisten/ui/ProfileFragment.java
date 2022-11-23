@@ -41,11 +41,7 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
-
+    private void setUpUser() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             binding.btnSignUp.setVisibility(View.GONE);
@@ -63,7 +59,7 @@ public class ProfileFragment extends Fragment {
                     myUser = snapshot.getValue(MyUser.class);
 
                     if (myUser != null || getContext() != null) {
-                        Glide.with(getContext()).load(myUser.getProfileImg()).fitCenter().into(binding.imgProfile);
+//                        Glide.with(getContext()).load(myUser.getProfileImg()).fitCenter().into(binding.imgProfile);
                         binding.tvHelloUser.setText("Xin chào, " + myUser.getName());
                     }
                 }
@@ -74,6 +70,21 @@ public class ProfileFragment extends Fragment {
                 }
             });
         }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
+
+        setUpUser();
+
+        binding.tvChangeInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), ChangeInfoActivity.class));
+            }
+        });
 
         binding.btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,6 +97,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getContext(), RegisterActivity.class));
+            }
+        });
+
+        binding.tvChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), ChangePassActivity.class));
             }
         });
 
@@ -126,5 +144,11 @@ public class ProfileFragment extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUpUser();
     }
 }

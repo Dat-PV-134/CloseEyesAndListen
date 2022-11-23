@@ -148,9 +148,10 @@ public class HomeFragmet extends Fragment {
         binding.imgNotifiHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                intent.putExtra("openNotifi", true);
-                startActivity(intent);
+//                Intent intent = new Intent(getContext(), MainActivity.class);
+//                intent.putExtra("openNotifi", true);
+//                startActivity(intent);
+                startActivity(new Intent(getContext(), InUpdatingActivity.class));
             }
         });
 

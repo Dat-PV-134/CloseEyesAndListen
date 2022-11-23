@@ -11,20 +11,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="120dp"
-            android:text="Close Eyes And Listen"
+            android:layout_marginTop="100dp"
+            android:textSize="24sp"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:text="Close Eyes And Listen" />
 
         <EditText
+            android:layout_marginTop="70dp"
             android:id="@+id/etSignUpName"
-            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvAppNameLogin"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="50dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/custom_button_style1"
@@ -32,6 +30,7 @@
             android:drawablePadding="10dp"
             android:hint="Họ tên"
             android:padding="13dp"
+            android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="14sp" />
 
@@ -55,17 +54,18 @@
         <EditText
             android:id="@+id/etSignUpPassWord"
             android:layout_width="match_parent"
-            android:textColor="@color/white"
             android:layout_height="wrap_content"
             android:layout_below="@id/etSignUpUserName"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
+            android:inputType="textPassword"
             android:layout_marginBottom="20dp"
             android:background="@drawable/custom_button_style1"
             android:drawableStart="@drawable/ic_baseline_lock_24"
             android:drawablePadding="10dp"
             android:hint="Mật khẩu"
             android:padding="13dp"
+            android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="14sp" />
 
@@ -73,16 +73,17 @@
             android:id="@+id/etRePassWord"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
             android:layout_below="@id/etSignUpPassWord"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
+            android:inputType="textPassword"
             android:layout_marginBottom="20dp"
             android:background="@drawable/custom_button_style1"
             android:drawableStart="@drawable/ic_baseline_lock_24"
             android:drawablePadding="10dp"
             android:hint="Nhập lại mật khẩu"
             android:padding="13dp"
+            android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:textSize="14sp" />
 
@@ -122,7 +123,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_toEndOf="@id/tvTitleSignUp"
                 android:text="Đăng nhập"
-                android:textColor="@color/main_green"
+                android:textColor="@color/teal_200"
                 android:textSize="14sp" />
         </RelativeLayout>
     </RelativeLayout>

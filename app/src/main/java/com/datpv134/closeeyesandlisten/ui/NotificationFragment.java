@@ -1,5 +1,6 @@
 package com.datpv134.closeeyesandlisten.ui;
 
+import static com.datpv134.closeeyesandlisten.service.MyApplication.isPushNotifi;
 import static com.datpv134.closeeyesandlisten.service.MyApplication.songList;
 
 import android.app.Application;
@@ -78,5 +79,17 @@ public class NotificationFragment extends Fragment {
         }
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroy() {
+        isPushNotifi = false;
+        super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        isPushNotifi = false;
+        super.onStop();
     }
 }

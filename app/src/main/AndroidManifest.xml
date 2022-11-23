@@ -19,6 +19,12 @@
         android:theme="@style/Theme.CloseEyesAndListen"
         tools:targetApi="31">
         <activity
+            android:name=".ui.ChangePassActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.ChangeInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.InUpdatingActivity"
             android:exported="false" />
         <activity
@@ -35,9 +41,9 @@
         <receiver android:name=".service.MyReceiver" />
 
         <activity
-            android:launchMode="singleTask"
             android:name=".ui.MusicPlayerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ui.SplashScreen"
             android:exported="true"
